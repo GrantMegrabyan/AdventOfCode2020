@@ -11,6 +11,7 @@ fn main() -> Result<(), MyError> {
     }
 
     two_numbers(2020, &args[0])?;
+    three_numbers(2020, &args[0])?;
 
     Ok(())
 }
@@ -33,6 +34,29 @@ fn two_numbers(target: i32, file_path: &str) -> Result<(), MyError>{
             set.insert(num);
         }
     }
+    Ok(())
+}
+
+fn three_numbers(target: i32, file_path: &str) -> Result<(), MyError> {
+    let f = File::open(file_path)?;
+    let f = BufReader::new(f);
+
+    let numbers: Vec<i32> = f.lines().map(|n| n.unwrap().parse().unwrap()).collect();
+    let mut set: HashSet<i32> = HashSet::with_capacity(numbers.len());
+
+    for i in 0..numbers.len() {
+        set.insert(numbers[i]);
+        for j in 1..numbers.len() {
+            let sum = numbers[i] + numbers[j];
+            let remainder = target - sum;
+
+            if set.contains(&remainder) {
+                println!("{}", numbers[i] * numbers[j] * remainder);
+                return Ok(())
+            }
+        }
+    }
+
     Ok(())
 }
 
