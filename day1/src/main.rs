@@ -1,22 +1,19 @@
-use std::fmt;
+use shared::{read_first_arg, MyError};
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::prelude::*;
-use std::io::{self, BufReader};
-use std::collections::HashSet;
+use std::io::BufReader;
 
 fn main() -> Result<(), MyError> {
-    let args: Vec<String> = std::env::args().skip(1).collect();
-    if args.len() < 1 {
-        return Err(MyError::InputNotProvided);
-    }
+    let input = read_first_arg()?;
 
-    two_numbers(2020, &args[0])?;
-    three_numbers(2020, &args[0])?;
+    two_numbers(2020, &input)?;
+    three_numbers(2020, &input)?;
 
     Ok(())
 }
 
-fn two_numbers(target: i32, file_path: &str) -> Result<(), MyError>{
+fn two_numbers(target: i32, file_path: &str) -> Result<(), MyError> {
     let f = File::open(file_path)?;
     let f = BufReader::new(f);
 
@@ -29,8 +26,7 @@ fn two_numbers(target: i32, file_path: &str) -> Result<(), MyError>{
         if set.contains(&remainder) {
             println!("{}", num * remainder);
             break;
-        }
-        else {
+        } else {
             set.insert(num);
         }
     }
@@ -52,33 +48,10 @@ fn three_numbers(target: i32, file_path: &str) -> Result<(), MyError> {
 
             if set.contains(&remainder) {
                 println!("{}", numbers[i] * numbers[j] * remainder);
-                return Ok(())
+                return Ok(());
             }
         }
     }
 
     Ok(())
 }
-
-#[derive(Debug)]
-enum MyError {
-    InputNotProvided,
-    FileNotFound(io::Error),
-}
-
-impl From<io::Error> for MyError {
-    fn from(error: io::Error) -> MyError {
-        MyError::FileNotFound(error)
-    }
-}
-
-impl fmt::Display for MyError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            MyError::InputNotProvided => write!(f, "Input file must be provided"),
-            MyError::FileNotFound(inner) => write!(f, "{}", inner),
-        }
-    }
-}
-
-impl std::error::Error for MyError {}
