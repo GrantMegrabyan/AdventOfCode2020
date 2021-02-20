@@ -8,3 +8,5 @@ edition = "2018"
 
 [dependencies]
 shared = { path = "../shared" }
+regex = "1"
+lazy_static = "1"
