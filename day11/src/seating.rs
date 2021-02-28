@@ -50,11 +50,11 @@ impl From<&str> for Seating {
 impl fmt::Display for Seating {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         for row in &self.seats {
-            write!(
+            writeln!(
                 f,
-                "{}\n",
+                "{}",
                 row.iter().map(|s| s.to_char()).collect::<String>()
-            )?;
+            )?
         }
         Ok(())
     }
@@ -95,7 +95,7 @@ impl Seating {
         }
     }
 
-    fn get_adjacent_seats<'a>(&'a self, row: usize, col: usize) -> Vec<&'a Seat> {
+    fn get_adjacent_seats(&self, row: usize, col: usize) -> Vec<&Seat> {
         let mut adj = Vec::with_capacity(8);
 
         for i in cmp::max(row as i32 - 1, 0) as usize..=row + 1 {
